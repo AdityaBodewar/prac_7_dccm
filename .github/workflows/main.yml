@@ -6,12 +6,10 @@ deploy_to_s3:
   image: amazon/aws-cli
 
   script:
-    # Configure AWS credentials
     - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
     - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
     - aws configure set default.region ap-south-1
 
-    # Upload files to S3 bucket
     - aws s3 sync . s3://practical-7-demo --delete
 
   only:
