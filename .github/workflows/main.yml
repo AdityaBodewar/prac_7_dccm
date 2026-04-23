@@ -1,16 +1,24 @@
-stages:
-  - deploy
+name: Deploy to S3
 
-deploy_to_s3:
-  stage: deploy
-  image: amazon/aws-cli
+on:
+  push:
+    branches:
+      - main
 
-  script:
-    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-    - aws configure set default.region ap-south-1
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-    - aws s3 sync . s3://practical-7-demo --delete
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-  only:
-    - main
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Deploy to S3
+        run: aws s3 sync . s3://practical-7-demo --delete
